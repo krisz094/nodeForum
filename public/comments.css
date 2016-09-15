@@ -1,0 +1,21 @@
+body {
+	font-family: arial;
+}
+.commentLine {
+	border:1px solid black;
+	margin: 12px;
+	background:#c8c8c8;
+}
+.commentHeader {
+	background:#eee;
+}
+
+.commentName {
+	color: #220088;
+	font-weight: bold;
+}
+
+#formDiv {
+	width:100%;
+	text-align: center;
+}
