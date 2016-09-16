@@ -51,7 +51,10 @@ app.use(express.static('public'));
 
 
 app.get('/',function(req,res){
-    res.render('index', {title: 'nodeForum', name: 'lol', comment: 'lel'});
+    res.render('index', {title: 'nodeForum'});
+});
+app.get('/pt',function(req,res){
+    res.render('postThread', {title: 'nodeForum'});
 });
 
 //ez faszság!!
@@ -87,18 +90,17 @@ app.post('/post/comment', function (req, res) {
     
 });
 
-app.post('/threads/:threadId', function (req, res) {
+app.post('/post/thread', function (req, res) {
     var d = new Date();
     var dateTime = addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":"  + addZero(d.getSeconds());
     var commentName = req.body.name;
     var commentText = req.body.comment;
-    var newComment = new Comment({ name: commentName, text: commentText, date: dateTime });
-    newComment.save(function (err) {
+    var newThread = new Thread({ comments: {name: commentName, imagePath: "null", body: commentText}});
+    newThread.save(function(err){
         if (err) console.log(err);
-        //else console.log("new comment: " + commentText);
     });
     //console.log(res);
-    res.redirect("/")
+    res.redirect("/pt")
     
 });
 
