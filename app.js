@@ -9,12 +9,15 @@ function addZero(i) {
     return i;
 }
 
-var url = 'mongodb://localhost:27017/beta5';
+var url = 'mongodb://localhost:27017/beta6';
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var express = require('express');
 var bodyParser = require('body-parser');
+var pug = require('pug');
 
+var compiledFunction = pug.compileFile('template.pug');
+
+var Schema = mongoose.Schema;
 var threadSchema = new Schema({
 	comments: [{
 		date: {type: Date, default: Date.now},
@@ -28,7 +31,7 @@ var threadSchema = new Schema({
 var CommentSchema = new Schema({
 	name: String,
 	text: String,
-	date: String
+    date: String
 });
 
 var Comment = mongoose.model('Comment', CommentSchema);
@@ -39,12 +42,17 @@ mongoose.connect(url);
 var db = mongoose.connection;
 var app = express();
 
+app.set('view engine','pug');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.static('public'));
 
+
+app.get('/',function(req,res){
+    res.render('index', {title: 'nodeForum', name: 'lol', comment: 'lel'});
+});
 
 //ez faszság!!
 app.get('/api/comments', function (req, res) {
@@ -72,9 +80,9 @@ app.post('/post/comment', function (req, res) {
     var newComment = new Comment({ name: commentName, text: commentText, date: dateTime });
     newComment.save(function (err) {
         if (err) console.log(err);
-        else console.log("new comment: " + commentText);
+        //else console.log("new comment: " + commentText);
     });
-    console.log(res);
+    // console.log(res);
     res.redirect("/")
     
 });
@@ -87,9 +95,9 @@ app.post('/threads/:threadId', function (req, res) {
     var newComment = new Comment({ name: commentName, text: commentText, date: dateTime });
     newComment.save(function (err) {
         if (err) console.log(err);
-        else console.log("new comment: " + commentText);
+        //else console.log("new comment: " + commentText);
     });
-    console.log(res);
+    //console.log(res);
     res.redirect("/")
     
 });
