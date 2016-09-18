@@ -55,13 +55,7 @@ app.get('/threads/:id',function(req,res){
     });
     
 });
-/*
-app.get('/api/threads',function(req,res){
-    Thread.find(function(err,threads){
-        res.send(threads);
-    });
-});
-*/
+
 app.post('/post/comment/:id', function (req, res) {
     console.log(req.params.id);
     Thread.findByIdAndUpdate(
@@ -76,8 +70,6 @@ app.post('/post/comment/:id', function (req, res) {
 });
 
 app.post('/post/thread/', function (req, res) {
-    var d = new Date();
-    var dateTime = addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":"  + addZero(d.getSeconds());
     var commentName = req.body.name;
     var commentText = req.body.comment;
     var newThread = new Thread({ comments: {name: commentName, imagePath: "null", body: commentText}});
@@ -87,11 +79,6 @@ app.post('/post/thread/', function (req, res) {
     //console.log(res);
     res.redirect("/");
     
-});
-
-
-app.post('/post/thread', function(req, res){
-
 });
 
 db.once('open', function () {
