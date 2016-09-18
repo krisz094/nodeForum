@@ -9,7 +9,7 @@ function addZero(i) {
     return i;
 }
 
-var url = 'mongodb://localhost:27017/beta9';
+var url = 'mongodb://localhost:27017/beta10';
 var mongoose = require('mongoose');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -26,6 +26,9 @@ var threadSchema = new Schema({
 		body: String,
 		imagePath: String
 	}]
+},
+{
+    timestamps: true
 });
 
 var Thread = mongoose.model('Thread', threadSchema);
@@ -43,10 +46,24 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 
 app.get('/',function(req,res){
-    Thread.find(function(err,sendThreads){
+    /*Thread.find(function(err,sendThreads){
         res.render('index',{ title:'nodeForum' , threads: sendThreads});
+    });*/
+
+    Thread.
+        find().
+        limit(10).
+        sort({ updatedAt: -1 }).
+        exec(function(err,sendThreads){
+            res.render('index',{ title:'nodeForum' , threads: sendThreads});
     });
+
 });
+
+app.get('/page/:pageNum',function(req,res){
+    res.send("WIP!");
+});
+
 
 app.get('/threads/:id',function(req,res){
     Thread.findById(req.params.id,function(err,foundThread){
