@@ -3,14 +3,26 @@ html(lang='en')
 	head
 		meta(charset='utf-8')
 		script(src='jquery-3.1.0.min.js')
-		script(src='getComments.js')
 		link(rel='stylesheet' href='comments.css')
 		title= title
 	body
 		div(id='formDiv')
-			form(action='/post/comment' method='POST')
+			form(action='/post/thread' method='POST')
 				input(type='text' placeholder='name' name='name')
-				input(type='text' placeholder='comment' name='comment')
+				br
+				textarea(placeholder='comment' name='comment')
+				br
 				button(type='submit') send
 
-		div(id='commentDiv')
+		div(id='board')
+			each thread in threads
+				div(class='threadDiv')
+					each comment in thread['comments']	
+						div(class='commentLine')
+							div(class='commentHeader')
+								div(class='commentName')= comment['name']
+								div(class='commentDate') #{moment(comment['date']).format('h:mm:ss MM/DD/YY')}
+								br
+								a(class='commentId' href='/threads/'+thread['_id'])= thread['_id']
+							div(class='commentBody')= comment['body']
+				hr

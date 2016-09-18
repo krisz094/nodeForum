@@ -1,21 +1,76 @@
 body {
 	font-family: arial;
+	background-color: #004E69;
+	text-align:center;
 }
 .commentLine {
 	border:1px solid black;
 	margin: 12px;
-	background:#c8c8c8;
+	background: rgba(255,255,255,0.7);
+	-webkit-box-shadow: 3px 3px 11px -1px rgba(0,0,0,0.52);
+	moz-box-shadow: 3px 3px 11px -1px rgba(0,0,0,0.52);
+	box-shadow: 3px 3px 11px -1px rgba(0,0,0,0.52);
+	border-radius: 2px;
+	width:60%;
+	margin-left: 10%;
+	text-align:left;
+}
+.commentLine:first-child {
+		background: rgba(255,255,255,1);
+		margin:0;
+}
+.commentBody {
+	padding: 5px;
+	overflow-wrap: break-word;
+  	word-wrap: break-word;
 }
 .commentHeader {
-	background:#eee;
+	color:white;
+	background: black;
+	padding:3px;
 }
 
 .commentName {
-	color: #220088;
 	font-weight: bold;
+	float:left;
+}
+.commentDate {
+	float:right;
 }
 
+
 #formDiv {
-	width:100%;
+	width:300px;
 	text-align: center;
+	display:inline-block;
+}
+
+#board {
+	width:100%;
+	margin:0;
+	padding:0;
+}
+
+
+hr {
+    height: 12px;
+    border: 0;
+    box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+}
+input,textarea, button {
+	font-family: arial;
+	padding:1px;
+	width:100%;
+	margin:0 0 5px 0;
+	border:1px solid black;
+}
+textarea {
+	height:100px;
+	resize:none;
+}
+a:visited,a:link {
+	color:#fff;
+}
+a:hover {
+	color:#ccc;
 }

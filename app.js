@@ -9,11 +9,12 @@ function addZero(i) {
     return i;
 }
 
-var url = 'mongodb://localhost:27017/beta6';
+var url = 'mongodb://localhost:27017/beta9';
 var mongoose = require('mongoose');
 var express = require('express');
 var bodyParser = require('body-parser');
 var pug = require('pug');
+
 
 var compiledFunction = pug.compileFile('template.pug');
 
@@ -27,21 +28,13 @@ var threadSchema = new Schema({
 	}]
 });
 
-//faszság
-var CommentSchema = new Schema({
-	name: String,
-	text: String,
-    date: String
-});
-
-var Comment = mongoose.model('Comment', CommentSchema);
-
 var Thread = mongoose.model('Thread', threadSchema);
 
 mongoose.connect(url);
 var db = mongoose.connection;
 var app = express();
 
+app.locals.moment=require('moment');
 app.set('view engine','pug');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -49,48 +42,40 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static('public'));
 
-
 app.get('/',function(req,res){
-    res.render('index', {title: 'nodeForum'});
-});
-app.get('/pt',function(req,res){
-    res.render('postThread', {title: 'nodeForum'});
-});
-
-//ez faszság!!
-app.get('/api/comments', function (req, res) {
-    Comment.find(function (err, comments) {
-        res.send(comments);
+    Thread.find(function(err,sendThreads){
+        res.render('index',{ title:'nodeForum' , threads: sendThreads});
     });
 });
-//majd ez kell helyette
-app.get('/threads/:threadId',function(req,res){
 
+app.get('/threads/:id',function(req,res){
+    Thread.findById(req.params.id,function(err,foundThread){
+        if (err) console.log(err);
+        res.render('thread',{title:'nodeForum',threadId: req.params.id, thread: foundThread});
+    });
+    
 });
-
+/*
 app.get('/api/threads',function(req,res){
     Thread.find(function(err,threads){
         res.send(threads);
     });
 });
-
-//régi
-app.post('/post/comment', function (req, res) {
-    var d = new Date();
-    var dateTime = addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":"  + addZero(d.getSeconds());
-    var commentName = req.body.name;
-    var commentText = req.body.comment;
-    var newComment = new Comment({ name: commentName, text: commentText, date: dateTime });
-    newComment.save(function (err) {
-        if (err) console.log(err);
-        //else console.log("new comment: " + commentText);
-    });
-    // console.log(res);
-    res.redirect("/")
-    
+*/
+app.post('/post/comment/:id', function (req, res) {
+    console.log(req.params.id);
+    Thread.findByIdAndUpdate(
+        req.params.id,
+        {$push: {"comments": {name: req.body.name, body: req.body.comment, imagePath: "null"}}},
+        {safe: true, upsert: true, new : true},
+        function(err, model) {
+            console.log(err);
+        }
+    );
+    res.redirect("/threads/" + req.params.id);
 });
 
-app.post('/post/thread', function (req, res) {
+app.post('/post/thread/', function (req, res) {
     var d = new Date();
     var dateTime = addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":"  + addZero(d.getSeconds());
     var commentName = req.body.name;
@@ -100,7 +85,7 @@ app.post('/post/thread', function (req, res) {
         if (err) console.log(err);
     });
     //console.log(res);
-    res.redirect("/pt")
+    res.redirect("/");
     
 });
 

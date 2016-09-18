@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		script(src='../jquery-3.1.0.min.js')
+		link(rel='stylesheet' href='../comments.css')
+		title= title
+	body
+		div(id='siteHeader')
+			a(href='http://kriszforum.asuscomm.com:3000')= 'back to front page'
+		div(id='formDiv')
+			form(action='/post/comment/'+threadId method='POST')
+				input(type='text' placeholder='name' name='name')
+				br
+				textarea(placeholder='comment' name='comment')
+				br
+				button(type='submit') send
+		div(id='board')
+			div(class='threadDiv')
+				each comment in thread['comments']
+					div(class='commentLine')
+						div(class='commentHeader')
+							div(class='commentName')= comment['name']
+							div(class='commentDate') #{moment(comment['date']).format('h:mm:ss MM/DD/YY')}
+							br
+							span(class='commentId' href='/')= comment['_id']
+						div(class='commentBody')= comment['body']
