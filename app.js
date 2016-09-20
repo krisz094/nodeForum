@@ -101,6 +101,6 @@ app.post('/post/thread/', function (req, res) {
 db.once('open', function () {
     console.log("mongoose connected to mongodb");
 });
-app.listen(3000, function () {
+app.listen(process.env.PORT, function () {
     console.log("webserver running.");
 });
