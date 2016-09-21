@@ -1,0 +1,39 @@
+//nthComment(thread,n) declaration
+mixin nthComment(thread,n)
+	div(class='commentLine')
+		div(class='commentHeader')
+			if thread['comments'][n]['name'] == ''
+				div(class='commentName')= 'Anonymous'
+			else
+				div(class='commentName')= thread['comments'][n]['name']
+			div(class='commentDate') #{moment(thread['comments'][n]['date']).format('h:mm:ss MM/DD/YY')}
+			br
+			a(class='commentId' href='/threads/'+thread['_id'])= thread['_id']
+		div(class='commentBody')= thread['comments'][n]['body']
+
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		script(src='jquery-3.1.0.min.js')
+		link(rel='stylesheet' href='comments.css')
+		title= title
+	body
+		div(id='formDiv')
+			form(action='/post/thread' method='POST')
+				input(type='text' placeholder='name (empty for Anonymous)' name='name')
+				br
+				textarea(placeholder='comment' name='comment')
+				br
+				button(type='submit') send
+
+		div(id='board')
+			each thread in threads
+				div(class='threadDiv')
+					+nthComment(thread,0)
+					-
+						i = thread['comments'].length - 3
+						if (i < 1) i = 1
+					while i < thread['comments'].length
+						+nthComment(thread,i++)		
+				hr

@@ -55,7 +55,7 @@ app.get('/',function(req,res){
         limit(10).
         sort({ updatedAt: -1 }).
         exec(function(err,sendThreads){
-            res.render('index',{ title:'nodeForum' , threads: sendThreads});
+            res.render('index2',{ title:'nodeForum' , threads: sendThreads});
     });
 
 });
