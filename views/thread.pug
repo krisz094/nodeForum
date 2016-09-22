@@ -3,6 +3,7 @@ html(lang='en')
 	head
 		meta(charset='utf-8')
 		script(src='../jquery-3.1.0.min.js')
+		script(src='../threadLogic.js')
 		link(rel='stylesheet' href='../comments.css')
 		title= title
 	body
@@ -12,19 +13,19 @@ html(lang='en')
 			form(action='/post/comment/'+threadId method='POST')
 				input(type='text' placeholder='name (empty for Anonymous)' name='name')
 				br
-				textarea(placeholder='comment' name='comment')
+				textarea(placeholder='comment' name='comment' id='replyArea')
 				br
 				button(type='submit') send
 		div(id='board')
 			div(class='threadDiv')
 				each comment in thread['comments']
-					div(class='commentLine')
+					div(class='commentLine' id=comment['_id'])
 						div(class='commentHeader')
 							if comment['name'] == ''
 								div(class='commentName')= 'Anonymous'
 							else
 								div(class='commentName')= comment['name']
 							div(class='commentDate') #{moment(comment['date']).format('h:mm:ss MM/DD/YY')}
-							br
-							span(class='commentId' href='/')= comment['_id']
+							board
+							a(class='commentId' href='#replyArea')= comment['_id']
 						div(class='commentBody')= comment['body']
