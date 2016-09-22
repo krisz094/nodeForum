@@ -38,6 +38,12 @@ body {
 	float:right;
 }
 
+.replyLink:link{
+	color:red;
+}
+.replyLink:visited{
+	color:brown;
+}
 
 #formDiv {
 	width:300px;

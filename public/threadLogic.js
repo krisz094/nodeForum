@@ -15,6 +15,6 @@ $(document).ready(function(){
 function IDtoURL(comment){
 	var IDregEx = /&gt;&gt;[0-9a-f]+/gm;
 	return comment.replace(IDregEx,function(id){
-		return '<a href="#' + id.replace(/&gt;/g,"") + '"> ' + id  + ' </a>';
+		return '<a class="replyLink" href="#' + id.replace(/&gt;/g,"") + '">' + id  + '</a>';
 	});
 }
