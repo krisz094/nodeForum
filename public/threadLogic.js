@@ -9,6 +9,10 @@ $(document).ready(function(){
 		console.log(this.innerHTML);
 	});
 
+	$('.commentBody').each(function(){
+		this.innerHTML= this.innerHTML.replace(/\\n/gm,'<br/>');
+	});
+
 
 });
 

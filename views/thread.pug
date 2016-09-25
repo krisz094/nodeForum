@@ -26,6 +26,6 @@ html(lang='en')
 							else
 								div(class='commentName')= comment['name']
 							div(class='commentDate') #{moment(comment['date']).format('h:mm:ss MM/DD/YY')}
-							board
+							br
 							a(class='commentId' href='#replyArea')= comment['_id']
 						div(class='commentBody')= comment['body']

@@ -45,11 +45,10 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static('public'));
 
-app.get('/',function(req,res){
-    /*Thread.find(function(err,sendThreads){
-        res.render('index',{ title:'nodeForum' , threads: sendThreads});
-    });*/
 
+//GET functions
+//site-get
+app.get('/',function(req,res){
     Thread.
         find().
         limit(10).
@@ -57,11 +56,17 @@ app.get('/',function(req,res){
         exec(function(err,sendThreads){
             res.render('index2',{ title:'nodeForum' , threads: sendThreads});
     });
-
 });
 
 app.get('/page/:pageNum',function(req,res){
-    res.send("WIP!");
+    Thread.
+        find().
+        skip(10*(req.params.pageNum-1)).
+        limit(10).
+        sort({ updatedAt: -1 }).
+        exec(function(err,sendThreads){
+            res.render('index2',{ title:'nodeForum' , threads: sendThreads});
+    });
 });
 
 
@@ -73,11 +78,29 @@ app.get('/threads/:id',function(req,res){
     
 });
 
+
+
+//api-get
+app.get('/api/threads',function(req,res){
+    Thread.
+        find().
+        exec(function(err,sendThreads){
+            res.send(sendThreads);
+        });
+});
+
+app.get('/api/comment/:id',function(req,res){
+    Thread.find({'comments._id': req.params.id},function(err,foundThread){
+        res.send(foundThread);
+    });
+});
+
+//POST functions
+
 app.post('/post/comment/:id', function (req, res) {
-    console.log(req.params.id);
     Thread.findByIdAndUpdate(
         req.params.id,
-        {$push: {"comments": {name: req.body.name, body: req.body.comment, imagePath: "null"}}},
+        {$push: {"comments": {name: req.body.name, body: convNewLines(req.body.comment), imagePath: "null"}}},
         {safe: true, upsert: true, new : true},
         function(err, model) {
             console.log(err);
@@ -88,8 +111,8 @@ app.post('/post/comment/:id', function (req, res) {
 
 app.post('/post/thread/', function (req, res) {
     var commentName = req.body.name;
-    var commentText = req.body.comment;
-    var newThread = new Thread({ comments: {name: commentName, imagePath: "null", body: commentText}});
+    var commentText = convNewLines(req.body.comment);
+    var newThread = new Thread({ comments: {name: req.body.name, imagePath: "null", body: convNewLines(req.body.comment)}});
     newThread.save(function(err){
         if (err) console.log(err);
     });
@@ -97,6 +120,13 @@ app.post('/post/thread/', function (req, res) {
     res.redirect("/");
     
 });
+
+//Functions
+function convNewLines(text){
+    return text.replace(/\n/gm,'\\n');
+}
+
+//Starting the server
 
 db.once('open', function () {
     console.log("mongoose connected to mongodb");
