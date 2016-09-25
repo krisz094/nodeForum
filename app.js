@@ -91,7 +91,10 @@ app.get('/api/threads',function(req,res){
 
 app.get('/api/comment/:id',function(req,res){
     Thread.find({'comments._id': req.params.id},function(err,foundThread){
-        res.send(foundThread);
+    	foundThread[0].comments.forEach(function(elem){
+    		if(elem._id == req.params.id)
+    			res.send(elem);
+    	});
     });
 });
 
