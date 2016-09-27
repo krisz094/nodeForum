@@ -78,8 +78,6 @@ app.get('/threads/:id',function(req,res){
     
 });
 
-
-
 //api-get
 app.get('/api/threads',function(req,res){
     Thread.
@@ -101,34 +99,40 @@ app.get('/api/comment/:id',function(req,res){
 //POST functions
 
 app.post('/post/comment/:id', function (req, res) {
-    Thread.findByIdAndUpdate(
-        req.params.id,
-        {$push: {"comments": {name: req.body.name, body: convNewLines(req.body.comment), imagePath: "null"}}},
-        {safe: true, upsert: true, new : true},
-        function(err, model) {
-            console.log(err);
+        if (emptyCheck(req.body.comment)) res.send("No empty comments allowed");
+        else {
+            Thread.findByIdAndUpdate(
+            req.params.id,
+            {$push: {"comments": {name: req.body.name, body: convNewLines(req.body.comment), imagePath: "null"}}},
+            {safe: true, upsert: true, new : true},
+            function(err, model) {
+                console.log(err);
+            }
+            );
+            res.redirect("/threads/" + req.params.id);
         }
-    );
-    res.redirect("/threads/" + req.params.id);
+    
 });
 
 app.post('/post/thread/', function (req, res) {
-    var commentName = req.body.name;
-    var commentText = convNewLines(req.body.comment);
-    var newThread = new Thread({ comments: {name: req.body.name, imagePath: "null", body: convNewLines(req.body.comment)}});
-    newThread.save(function(err){
-        if (err) console.log(err);
-    });
-    //console.log(res);
-    res.redirect("/");
-    
+    if (emptyCheck(req.body.comment)) res.send("No empty comments allowed");
+    else {
+        var newThread = new Thread({ comments: {name: req.body.name, imagePath: "null", body: convNewLines(req.body.comment)}});
+        newThread.save(function(err){
+            if (err) console.log(err);
+        });
+        //console.log(res);
+        res.redirect("/");
+    }
 });
 
 //Functions
 function convNewLines(text){
     return text.replace(/\n/gm,'\\n');
 }
-
+function emptyCheck(text) {
+    return text.replace(/\s/gm,'') == "";
+}
 //Starting the server
 
 db.once('open', function () {
